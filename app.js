@@ -1,15 +1,12 @@
-const API_URL =
-  'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyA_-yVCHCsPdRKtNMcd6tdlmPLmgun9lzY';
+const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAnp0lHEZnajMbDavNPrrTUhSGareRwFp0';
 
-// Build prompt to avoid repeats
 function buildPrompt() {
-  return `నాకు ఒక యాదృచ్ఛిక భగవద్గీత శ్లోకాన్ని తెలుగులో ఇవ్వండి, దాని అనువాదం మరియు ముఖ్య సందేశాన్ని తెలుగులో క్రింది JSON ఫార్మాట్‌లో:
+  return `భగవద్గీత నుండి ఒక యాదృచ్ఛిక శ్లోకాన్ని తెలుగులో ఇవ్వండి. దాని అనువాదం మరియు ముఖ్య సందేశాన్ని తెలుగులో ఈ ఫార్మాట్‌లో ఇవ్వండి:
 {
   "shloka": "...",
   "translation": "...",
   "message": "..."
-}
-గమనిక: ఒకే శ్లోకం రెండుసార్లు చూపబడకుండా జాగ్రత్తగా తీసుకోండి.`;
+}`; 
 }
 
 async function fetchShloka() {
@@ -18,16 +15,21 @@ async function fetchShloka() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        prompt: { text: buildPrompt() },
-        temperature: 0.5,
-        maxOutputTokens: 400
+        contents: [
+          {
+            parts: [
+              { text: buildPrompt() }
+            ]
+          }
+        ]
       })
     });
+
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    const text = data.candidates?.[0]?.output;
-    if (!text) throw new Error('No output in response');
-    return JSON.parse(text);
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    const parsed = JSON.parse(rawText);
+    return parsed;
   } catch (err) {
     console.error('Error fetching shloka:', err);
     return { shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.', translation: '', message: '' };
