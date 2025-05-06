@@ -1,4 +1,11 @@
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAnp0lHEZnajMbDavNPrrTUhSGareRwFp0';
+function getApiKey() {
+  let key = localStorage.getItem('gemini_api_key');
+  if (!key) {
+    key = prompt('దయచేసి మీ Gemini API key ను ఇవ్వండి:');
+    if (key) localStorage.setItem('gemini_api_key', key);
+  }
+  return key;
+}
 
 function buildPrompt() {
   return `భగవద్గీత నుండి ఒక యాదృచ్ఛిక శ్లోకాన్ని తెలుగులో ఇవ్వండి. దాని అనువాదం మరియు ముఖ్య సందేశాన్ని తెలుగులో ఈ ఫార్మాట్‌లో ఇవ్వండి:
@@ -10,26 +17,18 @@ function buildPrompt() {
 }
 
 async function fetchShloka() {
+  const key = getApiKey();
+  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: buildPrompt() }
-            ]
-          }
-        ]
-      })
+      body: JSON.stringify({ contents: [{ parts: [{ text: buildPrompt() }] }] })
     });
-
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    const parsed = JSON.parse(rawText);
-    return parsed;
+    return JSON.parse(rawText);
   } catch (err) {
     console.error('Error fetching shloka:', err);
     return { shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.', translation: '', message: '' };
@@ -49,7 +48,6 @@ async function init() {
 }
 
 document.getElementById('refreshBtn').addEventListener('click', init);
-
 document.getElementById('audioBtn').addEventListener('click', () => {
   const text = [
     document.getElementById('shlokaText').textContent,
@@ -62,8 +60,6 @@ document.getElementById('audioBtn').addEventListener('click', () => {
 });
 
 window.addEventListener('load', () => {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
   init();
 });
