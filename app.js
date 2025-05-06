@@ -12,12 +12,25 @@ function buildPrompt() {
 }
 
 function sanitizeGeminiResponse(rawText) {
-  const cleaned = rawText.replace(/^```json\n|\n```$/g, '').trim();
   try {
-    return JSON.parse(cleaned);
-  } catch (e) {
-    console.error('JSON parse error. Raw:', cleaned);
-    return { shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.', translation: '', message: '' };
+    console.log('[Raw Gemini Text]', rawText);
+
+    const cleaned = rawText
+      .replace(/```json\n?|```/g, '')
+      .replace(/^```|```$/g, '')
+      .trim();
+
+    const unescaped = cleaned.replace(/\\n/g, '\n');
+    console.log('[Cleaned JSON String]', unescaped);
+
+    return JSON.parse(unescaped);
+  } catch (err) {
+    console.error('JSON parse error:', err);
+    return {
+      shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.',
+      translation: '',
+      message: `పార్స్ లో లోపం: ${err.message}`
+    };
   }
 }
 
@@ -34,14 +47,22 @@ async function fetchShloka() {
       })
     });
 
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      const errorBody = await res.text();
+      console.error(`[HTTP ${res.status}]`, errorBody);
+      throw new Error(`HTTP ${res.status}`);
+    }
+
     const data = await res.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    console.log('Raw Gemini response:', rawText);
     return sanitizeGeminiResponse(rawText);
   } catch (err) {
-    console.error('Error fetching shloka:', err);
-    return { shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.', translation: '', message: '' };
+    console.error('Fetch error:', err);
+    return {
+      shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.',
+      translation: '',
+      message: `నెట్వర్క్ లోపం: ${err.message}`
+    };
   }
 }
 
