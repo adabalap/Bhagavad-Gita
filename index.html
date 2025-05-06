@@ -6,26 +6,23 @@
   <title>GeetaTelugu PWA</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4F46E5" />
-  <link href="https://fonts.googleapis.com/css2?family=Mukta+Vaani:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="styles.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-br from-purple-600 to-indigo-500 text-gray-100 font-mukta-vaani flex items-center justify-center min-h-screen p-4">
-  <div class="card max-w-md w-full bg-white bg-opacity-10 backdrop-blur-md rounded-2xl shadow-xl p-8 space-y-6 transform transition-transform hover:scale-105 animate-fade-in">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 flex items-center justify-center min-h-screen p-4">
+  <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-6">
     <header class="flex justify-between items-center">
-      <h1 class="text-3xl font-bold tracking-wide">భావగీత శ్లోకం</h1>
-      <button id="refreshBtn" class="btn-refresh px-4 py-2 bg-indigo-700 bg-opacity-80 rounded-lg hover:bg-opacity-100 transition">మరొకటి</button>
+      <h1 class="text-2xl font-bold">భావగీత శ్లోకం</h1>
+      <button id="refreshBtn" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">మరొకటి</button>
     </header>
     <div id="shlokaContainer" class="space-y-4">
-      <p id="shlokaText" class="text-xl italic leading-relaxed">లోడ్ అవుతోంది...</p>
+      <p id="shlokaText" class="text-lg italic">లోడ్ అవుతోంది...</p>
       <p id="translationText" class="text-base"></p>
-      <p id="messageText" class="text-sm"></p>
+      <p id="messageText" class="text-sm text-gray-600 dark:text-gray-400"></p>
     </div>
-    <button id="audioBtn" class="btn-audio w-full flex items-center justify-center space-x-3 px-4 py-3 border border-gray-200 bg-white bg-opacity-20 rounded-lg hover:bg-opacity-30 transition">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 2a.75.75 0 01.75.75v14.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zm-2.5 3.25a.75.75 0 01.75.75v6a.75.75 0 01-1.5 0v-6a.75.75 0 01.75-.75z" clip-rule="evenodd" />
-      </svg>
-      <span class="text-white font-semibold">పఠన శ్రవించండి</span>
+    <button id="audioBtn" class="w-full flex items-center justify-center space-x-2 px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4a1 1 0 00-1 1v10a1 1 ..."/></svg>
+      <span>పఠన శ్రవించండి</span>
     </button>
   </div>
   <script src="app.js"></script>

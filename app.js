@@ -8,37 +8,47 @@ function getApiKey() {
 }
 
 function buildPrompt() {
-  return `భగవద్గీత నుండి ఒక యాదృచ్ఛిక శ్లోకాన్ని తెలుగులో ఇవ్వండి. దాని అనువాదం మరియు ముఖ్య సందేశాన్ని తెలుగులో ఈ ఫార్మాట్‌లో ఇవ్వండి:
-{
-  "shloka": "...",
-  "translation": "...",
-  "message": "..."
-}`; 
+  return `Give me a Bhagavad Gita verse in Telugu with translation and message in Telugu in JSON format.`;
+}
+
+function sanitizeGeminiResponse(rawText) {
+  const cleaned = rawText.replace(/^```json\n|\n```$/g, '').trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch (e) {
+    console.error('JSON parse error. Raw:', cleaned);
+    return { shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.', translation: '', message: '' };
+  }
 }
 
 async function fetchShloka() {
   const key = getApiKey();
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: buildPrompt() }] }] })
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: buildPrompt() }] }]
+      })
     });
+
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    return JSON.parse(rawText);
+    console.log('Raw Gemini response:', rawText);
+    return sanitizeGeminiResponse(rawText);
   } catch (err) {
     console.error('Error fetching shloka:', err);
     return { shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.', translation: '', message: '' };
   }
 }
 
-function display({ shloka, translation, message }) {
-  document.getElementById('shlokaText').textContent = shloka;
-  document.getElementById('translationText').textContent = translation;
-  document.getElementById('messageText').textContent = message;
+function display(data) {
+  document.getElementById('shlokaText').textContent = data.telugu_verse || data.shloka || '...';
+  document.getElementById('translationText').textContent = data.telugu_translation || data.translation || '';
+  document.getElementById('messageText').textContent = data.telugu_message || data.message || '';
 }
 
 async function init() {
@@ -60,6 +70,8 @@ document.getElementById('audioBtn').addEventListener('click', () => {
 });
 
 window.addEventListener('load', () => {
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
   init();
 });
