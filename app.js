@@ -18,12 +18,13 @@ function sanitizeGeminiResponse(rawText) {
     const cleaned = rawText
       .replace(/```json\n?|```/g, '')
       .replace(/^```|```$/g, '')
+      .replace(/\n/g, '\\n')   // Ensure escaped newlines stay escaped
+      .replace(/?
+/g, '')      // Remove actual line breaks
       .trim();
 
-    const unescaped = cleaned.replace(/\\n/g, '\n');
-    console.log('[Cleaned JSON String]', unescaped);
-
-    return JSON.parse(unescaped);
+    console.log('[Cleaned JSON String]', cleaned);
+    return JSON.parse(cleaned);
   } catch (err) {
     console.error('JSON parse error:', err);
     return {
@@ -61,7 +62,7 @@ async function fetchShloka() {
     return {
       shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.',
       translation: '',
-      message: `నెట్వర్క్ లోపం: ${err.message}`
+      message: `నెట్వర్క్ లో లోపం: ${err.message}`
     };
   }
 }
