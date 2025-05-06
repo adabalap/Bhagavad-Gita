@@ -14,15 +14,12 @@ function buildPrompt() {
 function sanitizeGeminiResponse(rawText) {
   try {
     console.log('[Raw Gemini Text]', rawText);
-
     const cleaned = rawText
       .replace(/```json\n?|```/g, '')
       .replace(/^```|```$/g, '')
-      .replace(/\n/g, '\\n')   // Ensure escaped newlines stay escaped
-      .replace(/?
-/g, '')      // Remove actual line breaks
+      .replace(/\\n/g, '\\n')
+      .replace(/\r?\n/g, '')
       .trim();
-
     console.log('[Cleaned JSON String]', cleaned);
     return JSON.parse(cleaned);
   } catch (err) {
@@ -38,22 +35,17 @@ function sanitizeGeminiResponse(rawText) {
 async function fetchShloka() {
   const key = getApiKey();
   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: buildPrompt() }] }]
-      })
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({contents: [{parts: [{text: buildPrompt()}]}]})
     });
-
     if (!res.ok) {
       const errorBody = await res.text();
       console.error(`[HTTP ${res.status}]`, errorBody);
       throw new Error(`HTTP ${res.status}`);
     }
-
     const data = await res.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     return sanitizeGeminiResponse(rawText);
@@ -62,7 +54,7 @@ async function fetchShloka() {
     return {
       shloka: 'క్షమించండి, లోడ్ చేయలేకపోయాం.',
       translation: '',
-      message: `నెట్వర్క్ లో లోపం: ${err.message}`
+      message: `నెట్వర్క్ లోపం: ${err.message}`
     };
   }
 }
@@ -74,7 +66,7 @@ function display(data) {
 }
 
 async function init() {
-  display({ shloka: 'లోడ్ అవుతోంది...', translation: '', message: '' });
+  display({shloka: 'లోడ్ అవుతున్నది...', translation: '', message: ''});
   const obj = await fetchShloka();
   display(obj);
 }
