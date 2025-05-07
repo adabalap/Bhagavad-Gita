@@ -1,8 +1,8 @@
-const CACHE_NAME = 'geeta-cache-v1';
-const FILES_TO_CACHE = ['/', 'index.html', 'styles.css', 'app.js', 'manifest.json'];
+const CACHE_NAME = 'geeta-cache-v2';
+const FILES = ['/', 'index.html', 'styles.css', 'app.js', 'manifest.json'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE)));
+  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(FILES)));
 });
 
 self.addEventListener('fetch', e => {

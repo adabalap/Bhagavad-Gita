@@ -3,27 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeetaTelugu PWA</title>
+  <title>GeetaTelugu</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4F46E5" />
+  <meta name="theme-color" content="#6D28D9" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="styles.css" rel="stylesheet">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 flex items-center justify-center min-h-screen p-4">
-  <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 space-y-6">
-    <header class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold">భావగీత శ్లోకం</h1>
-      <button id="refreshBtn" class="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">మరొకటి</button>
-    </header>
-    <div id="shlokaContainer" class="space-y-4">
-      <p id="shlokaText" class="text-lg italic">లోడ్ అవుతున్నారు...</p>
-      <p id="translationText" class="text-base"></p>
-      <p id="messageText" class="text-sm text-gray-600 dark:text-gray-400"></p>
+<body class="min-h-screen bg-gradient-to-br from-purple-700 to-indigo-600 flex items-center justify-center p-4">
+  <div class="w-full max-w-lg bg-white/80 backdrop-blur-md rounded-3xl shadow-xl p-8 space-y-6">
+    <h1 class="text-center text-3xl font-extrabold text-purple-900">భగవద్గీత శ్లోకం</h1>
+    <div id="shlokaCard" class="space-y-4 p-4 bg-white rounded-2xl shadow-md">
+      <p id="shlokaText" class="text-xl italic text-gray-800">లోడ్ అవుతోంది...</p>
+      <p id="translationText" class="text-lg text-gray-700"></p>
+      <p id="messageText" class="text-sm text-gray-600"></p>
     </div>
-    <button id="audioBtn" class="w-full flex items-center justify-center space-x-2 px-4 py-2 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-      <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4a1 1 0 00-1 1v10a1 1 ..."/></svg>
-      <span>పఠన శ్రవించండి</span>
-    </button>
+    <div class="flex justify-between">
+      <button id="refreshBtn" class="flex-1 mr-2 px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition">మరొకటి</button>
+      <button id="audioBtn" class="flex-1 ml-2 px-4 py-2 border border-purple-600 text-purple-600 rounded-xl hover:bg-purple-50 transition flex items-center justify-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 8a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3-3v12"/></svg>
+        <span>వింటేరు</span>
+      </button>
+    </div>
   </div>
   <script src="app.js"></script>
 </body>
